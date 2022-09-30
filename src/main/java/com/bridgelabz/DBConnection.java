@@ -1,40 +1,22 @@
 package com.bridgelabz;
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
-import java.util.Enumeration;
+import java.sql.SQLException;
 
 public class DBConnection {
-    public static void main (String[] args){
-        String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
-        String userName =  "root";
-        String password = "root";
-        Connection con;
-        try{
+    public Connection getConfig(){
+        String URL_JD = "jdbc:mysql://localhost:3306/payroll_service";
+        String USER_NAME = "root";
+        String PASSWORD = "root";
+        Connection connection = null;
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("Driver Loaded");
-        }
-        catch(ClassNotFoundException e) {
-            throw new IllegalStateException("cannot find the driver in the classpath", e);
-        }
-        listDrivers();
-        try{
-            System.out.println("connecting to database:"+jdbcURL);
-            con =  DriverManager.getConnection(jdbcURL,userName,password);
-            System.out.println("Connecting successfully!!! "+con);
-
-        } catch (Exception e) {
+            System.out.println("Drivers loaded!!");
+            connection = DriverManager.getConnection(URL_JD,USER_NAME,PASSWORD);
+            System.out.println("connection Established!!");
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void listDrivers() {
-        Enumeration<Driver> driverlist = DriverManager.getDrivers();
-        while(driverlist.hasMoreElements()){
-            Driver driverClass = (Driver) driverlist.nextElement();
-            System.out.println(" "+driverClass.getClass().getName());
-
-        }
-    }
-}
+        return connection;
+    }}
 
