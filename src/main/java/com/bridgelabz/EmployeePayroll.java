@@ -1,8 +1,5 @@
 package com.bridgelabz;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class EmployeePayroll {
@@ -35,9 +32,28 @@ public class EmployeePayroll {
             for (Employee i : empList) {
                 System.out.println(i.toString());
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new EmployeeException("invalid column label");
+        }
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/payroll_service", "root", "root");
+            System.out.println("Connectiom" + connection);
+            PreparedStatement preparedStatementObject = connection.prepareStatement("UPDATE employee_payroll SET basic_pay = ? WHERE name = ?");
+            preparedStatementObject.setDouble(1, 90000.00);
+            preparedStatementObject.setString(2, "terica");
+
+            preparedStatementObject.executeUpdate();
+            PreparedStatement preparedStatementDisplay = connection.prepareStatement("select * from employee_payroll");
+            ResultSet resultSet = preparedStatementDisplay.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getDouble(1) + " " + resultSet.getString(2) );
+            }
+            connection.close();
+
+        } catch (Exception exception) {
+            System.out.println(exception);
         }
     }
 }
